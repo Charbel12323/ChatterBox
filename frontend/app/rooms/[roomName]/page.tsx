@@ -7,6 +7,8 @@ import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { Gamepad2, Users, Smile, Send, Volume2, VolumeX, X } from "lucide-react";
 import Link from "next/link";
+import { useAuth } from "@/app/Authcontent"; // ✅ Import user auth
+
 
 // ✅ Connect to WebSocket server
 const socket = io("http://localhost:5000");
@@ -24,6 +26,8 @@ type User = {
 };
 
 export default function RoomPage() {
+    const { user } = useAuth(); // ✅ Get the logged-in user
+
     const { roomName } = useParams() as { roomName: string };
 
     const [message, setMessage] = useState<string>(""); // ✅ Message input state
@@ -34,12 +38,26 @@ export default function RoomPage() {
 
     // ✅ Runs when user enters a new room
     useEffect(() => {
-        socket.emit("join-room", roomName);
+
+        if (!user) return; // Make sure no user is logged in
+
+
+        const username = user.username; // Get the username of the user
+
+        if (socket.connected) {
+          socket.emit("join-room", { room: roomName, uid: user.uid, username });
+        } else {
+          socket.on("connect", () => {
+            socket.emit("join-room", { room: roomName, uid: user.uid, username });
+          });
+        }
+
 
         // 📩 Listen for incoming messages
         socket.on("group-message", (data: Message) => {
-            setMessages((prev) => [...prev, data]);
-        });
+          console.log("📩 New message received:", data); // ✅ Debug log
+          setMessages((prev) => [...prev, data]);
+      });
 
         // 🟢 Listen for active users in the room
         socket.on("active-users", (data: User[]) => {
@@ -50,23 +68,29 @@ export default function RoomPage() {
             socket.off("group-message");
             socket.off("active-users");
         };
-    }, [roomName]);
+    }, [roomName, user]);
 
     // ✅ Handle sending messages
     const handleSendMessage = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!message.trim()) return;
-
-        const newMessage: Message = {
-            sender: "You", // Replace with actual user ID if available
-            text: message,
-            timestamp: new Date().toLocaleTimeString(),
-        };
-
-        socket.emit("group-message", { room: roomName, ...newMessage });
-        setMessage("");
-    };
-
+      e.preventDefault();
+      if (!message.trim()) return;
+  
+      
+      if (!user) {
+          alert("You must be logged in to send messages.");
+          return;
+      }
+  
+      socket.emit("group-message", {
+          room: roomName,
+          uid: user.uid,
+          username: user.username || `Guest-${user.uid.substring(0, 5)}`, // Default guest name
+          message,
+      });
+  
+      setMessage("");
+  };
+  
     return (
         <div className="min-h-screen bg-[#0f172a] text-white font-[Press_Start_2P] antialiased flex flex-col">
             {/* Header */}
@@ -150,7 +174,7 @@ export default function RoomPage() {
                         >
                             <X className="h-5 w-5" />
                         </button>
-                    </div>
+                 V   </div>
                     <div className="p-4 space-y-2">
                         {users.map((user, index) => (
                             <div key={index} className="flex items-center gap-2 text-sm font-sans">

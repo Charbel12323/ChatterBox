@@ -71,26 +71,27 @@ const SignupPage = () => {
     const handleGoogleSignIn = async () => {
         try {
             const result = await signInWithPopup(auth, googleProvider);
-            const user = result.user; // Get user info
-
-            // ✅ Check if user exists in Firestore
+            const user = result.user; // ✅ Get Google user details
+    
+            // ✅ Reference user doc in Firestore
             const userRef = doc(db, "users", user.uid);
+    
+            // ✅ Use { merge: true } to update only if necessary
             await setDoc(userRef, {
                 uid: user.uid,
                 email: user.email,
-                username: user.displayName, // Get Google username
-                profilePic: user.photoURL,  // Get Google profile picture
+                username: user.displayName || "New User",
+                profilePic: user.photoURL || "",
                 createdAt: new Date(),
             }, { merge: true });
-
-            alert(`Welcome ${user.displayName}!`);
+    
+            alert(`Welcome ${user.displayName || "User"}!`);
         } catch (err) {
             setError("Google Sign-In failed. Please try again.");
             console.error("Google Sign-In Error:", err.message);
         }
     };
-
-    return (
+        return (
         <div className="min-h-screen bg-[#0f172a] text-white font-[Press_Start_2P] antialiased">
             {/* Header */}
             <header className="border-b-4 border-[#4ade80] bg-[#1e293b] px-4 py-3">
