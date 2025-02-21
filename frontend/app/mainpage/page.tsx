@@ -9,24 +9,25 @@ import {io} from "socket.io-client"
 import {useState} from 'react'
 import { useRouter } from "next/navigation"
 import { join } from "path"
-
-
+import BioChem from "@/app/images/BioChem.jpg"
+import Physics from  "@/app/images/physics.jpg"
+import Math from  "@/app/images/Math.png"
 const gameCategories = [
   {
-    name: "ARCADE",
-    image: "/placeholder.svg?height=200&width=200",
-    players: "1-2 Players",
+    name: "BioChem",
+    image: BioChem,
+    players: "15 Players",
     difficulty: "Easy",
   },
   {
-    name: "RPG",
-    image: "/placeholder.svg?height=200&width=200",
+    name: "Physics",
+    image: Physics,
     players: "1-4 Players",
     difficulty: "Medium",
   },
   {
-    name: "PLATFORMER",
-    image: "/placeholder.svg?height=200&width=200",
+    name: "Math",
+    image: Math,
     players: "1 Player",
     difficulty: "Hard",
   },

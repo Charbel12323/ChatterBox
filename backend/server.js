@@ -10,7 +10,7 @@ app.use(cors()); // Enable CORS for all requests
 
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:3001", // Make sure this matches your frontend
+        origin: "http://localhost:3001", 
         methods: ["GET", "POST"],
     },
 });
@@ -21,9 +21,7 @@ const usersInRoom = {};
 io.on("connection", (socket) => {
     console.log(`🟢 User connected: ${socket.id}`);
 
-    // Store user data for this session.
-    // (Note: In a real app, you'd get user info from authentication,
-    //  here we use a placeholder that will be replaced on join-room.)
+ 
     let currentUser = { 
         uid: socket.id, 
         username: `Guest-${socket.id}`,
@@ -71,7 +69,6 @@ io.on("connection", (socket) => {
         io.to(room).emit("active-users", usersInRoom[room]);
     });
 
-    // ✅ Handle Room-Based Messaging
     socket.on("group-message", ({ room, uid, username, message }) => {
         if (!room || !uid || !username || !message) {
             console.error("⚠️ Missing required fields in group-message:", { room, uid, username, message });
@@ -87,7 +84,6 @@ io.on("connection", (socket) => {
         });
     });
     
-    // ✅ Handle Disconnect: update user status to offline in every room
     socket.on("disconnect", () => {
         console.log(`🔴 User Disconnected: ${currentUser.username} (${socket.id})`);
 
