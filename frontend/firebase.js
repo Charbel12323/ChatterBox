@@ -1,25 +1,23 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider} from "firebase/auth"; // ✅ This line was missing!
-import { getFirestore, doc, setDoc } from "firebase/firestore"; // Firestore imports
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+// firebase.js or firebaseConfig.js
 
-// Your web app's Firebase configuration
+import { initializeApp } from "firebase/app";
+import { getAuth, GoogleAuthProvider } from "firebase/auth"; 
+import { getFirestore } from "firebase/firestore";
+
+// Your Firebase configuration from environment variables
 const firebaseConfig = {
-  apiKey: "AIzaSyDnxZishUhccraAKfJtofi4jhhsXMa4zo4",
-  authDomain: "chatterbox-9fef1.firebaseapp.com",
-  projectId: "chatterbox-9fef1",
-  storageBucket: "chatterbox-9fef1.firebasestorage.app",
-  messagingSenderId: "139294348994",
-  appId: "1:139294348994:web:ef8c05db1d878ed8a34d5b"
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
+const db = getFirestore(app);
 
-const db = getFirestore(app); // Initialize Firestore database
-
-export { auth, db,googleProvider };
+export { auth, db, googleProvider };
