@@ -21,7 +21,8 @@ type Message = {
 };
 
 type User = {
-    name: string;
+    username: string;
+    uid: string;
     status: "online" | "offline";
 };
 
@@ -174,12 +175,12 @@ export default function RoomPage() {
                         >
                             <X className="h-5 w-5" />
                         </button>
-                 V   </div>
+                   </div>
                     <div className="p-4 space-y-2">
                         {users.map((user, index) => (
                             <div key={index} className="flex items-center gap-2 text-sm font-sans">
-                                <span className={`w-2 h-2 rounded-full ${user.status === "online" ? "bg-[#4ade80]" : "bg-gray-400"}`} />
-                                {user.name}
+                                <span className={`w-2 h-2 rounded-full ${user.status === "online" ? "bg-green-500" : "bg-gray-400"}`} />
+                                {user.username}
                             </div>
                         ))}
                     </div>

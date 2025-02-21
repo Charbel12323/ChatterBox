@@ -15,14 +15,21 @@ const io = new Server(server, {
     },
 });
 
-const usersInRoom = {}; // Stores active users in rooms
+// Dictionary to store active users per room
+const usersInRoom = {}; 
 
 io.on("connection", (socket) => {
     console.log(`🟢 User connected: ${socket.id}`);
 
-    // ✅ Store user data for this session
-    let currentUser = { uid: socket.id, username: `Guest-${socket.id}` };
-
+    // Store user data for this session.
+    // (Note: In a real app, you'd get user info from authentication,
+    //  here we use a placeholder that will be replaced on join-room.)
+    let currentUser = { 
+        uid: socket.id, 
+        username: `Guest-${socket.id}`,
+        status: "online"
+    };
+      
     // ✅ Handle General Chat Messages
     socket.on("general-message", ({ username, message }) => {
         console.log(`📩 ${username} sent: ${message}`);
@@ -30,32 +37,37 @@ io.on("connection", (socket) => {
     });
 
     // ✅ Handle Room Joining
-
-    
     socket.on("join-room", ({ room, uid, username }) => {
         socket.join(room);
         console.log(`🏠 ${username} joined room: ${room}`);
 
-        currentUser = { uid, username }; // Store user info
+        // Update currentUser with the provided uid and username,
+        // and mark them as online.
+        currentUser = { uid, username, status: "online" };
 
+        // If the room doesn't exist yet, initialize it as an empty array.
         if (!usersInRoom[room]) {
             usersInRoom[room] = [];
         }
 
-        // ✅ Avoid duplicate users
-        const isUserAlreadyInRoom = usersInRoom[room].some(user => user.uid === uid);
-        if (!isUserAlreadyInRoom) {
-            usersInRoom[room].push({ uid, username });
+        // Check if the user is already in the room.
+        const existingIndex = usersInRoom[room].findIndex(user => user.uid === uid);
+        if (existingIndex !== -1) {
+            // If found, update the status to online.
+            usersInRoom[room][existingIndex].status = "online";
+        } else {
+            // Otherwise, add the user with status "online"
+            usersInRoom[room].push({ uid, username, status: "online" });
         }
 
-        // ✅ Notify room about new user
+        // Notify room about the new user
         io.to(room).emit("group-message", {
             sender: "Server",
             text: `${username} has joined ${room}`,
             timestamp: new Date().toLocaleTimeString(),
         });
 
-        // ✅ Send updated user list
+        // Send updated user list to the room
         io.to(room).emit("active-users", usersInRoom[room]);
     });
 
@@ -75,15 +87,18 @@ io.on("connection", (socket) => {
         });
     });
     
-
-    // ✅ Handle Disconnect
+    // ✅ Handle Disconnect: update user status to offline in every room
     socket.on("disconnect", () => {
         console.log(`🔴 User Disconnected: ${currentUser.username} (${socket.id})`);
 
-        // ✅ Remove user from all rooms
+        // For each room, update the status of the user (if present) to "offline"
         for (const room in usersInRoom) {
-            usersInRoom[room] = usersInRoom[room].filter(user => user.uid !== currentUser.uid);
-            io.to(room).emit("active-users", usersInRoom[room]); // Update user list
+            const userIndex = usersInRoom[room].findIndex(user => user.uid === currentUser.uid);
+            if (userIndex !== -1) {
+                usersInRoom[room][userIndex].status = "offline";
+                // Emit the updated user list so clients can update their view
+                io.to(room).emit("active-users", usersInRoom[room]);
+            }
         }
     });
 });

@@ -11,7 +11,6 @@ import { useRouter } from "next/navigation"
 import { join } from "path"
 
 
-const socket = io("http://localhost:5000");
 const gameCategories = [
   {
     name: "ARCADE",
