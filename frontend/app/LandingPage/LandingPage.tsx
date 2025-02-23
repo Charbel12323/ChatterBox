@@ -2,7 +2,7 @@ import { Button } from "@/app/components/ui/button"
 import { ChevronRight, Gamepad2, Zap, Trophy, Users } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
-
+import Chatter from "../images/Chatter.jpg"
 export default function Page() {
   return (
     <div className="min-h-screen bg-[#0f172a] text-white font-[Press_Start_2P] antialiased">
@@ -35,10 +35,10 @@ export default function Page() {
             <h1 className="text-4xl md:text-5xl leading-tight">
               ENTER THE
               <br />
-              <span className="text-[#4ade80]">PIXEL VERSE</span>
+              <span className="text-[#4ade80]">Chatter VERSE</span>
             </h1>
             <p className="text-[#94a3b8] leading-relaxed font-sans">
-              Experience the ultimate retro gaming adventure. Join thousands of players in a pixelated universe of
+              Experience the ultimate retro Chatting adventure. Join thousands of players in a pixelated universe of
               endless possibilities.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
@@ -63,7 +63,7 @@ export default function Page() {
           <div className="relative">
             <div className="aspect-square relative">
               <Image
-                src="/placeholder.svg?height=512&width=512"
+                src = {Chatter}
                 alt="Retro Game Character"
                 width={512}
                 height={512}
@@ -80,7 +80,7 @@ export default function Page() {
       <section className="container px-4  ">
         <div className="text-center mb-16">
           <h2 className="text-2xl md:text-3xl text-[#4ade80] mb-4">FEATURES</h2>
-          <p className="text-[#94a3b8] font-sans">Level up your gaming experience with our unique features</p>
+          <p className="text-[#94a3b8] font-sans">Level up your Chatting experience with our unique features</p>
         </div>
         <div className="grid md:grid-cols-3 gap-8">
           {[
