@@ -11,18 +11,16 @@ export default function Page() {
         <div className="container flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <Gamepad2 className="h-6 w-6 text-[#4ade80]" />
-            <span className="text-lg tracking-wider">PIXEL8</span>
+            <span className="text-lg tracking-wider">ChatterBox</span>
           </Link>
           <nav className="hidden sm:flex gap-8">
             <Link href="#" className="hover:text-[#4ade80] transition-colors text-sm">
-              PLAY
+              Chat
             </Link>
             <Link href="#" className="hover:text-[#4ade80] transition-colors text-sm">
               ABOUT
             </Link>
-            <Link href="#" className="hover:text-[#4ade80] transition-colors text-sm">
-              SCORES
-            </Link>
+            
           </nav>
         </div>
       </header>

@@ -10,7 +10,7 @@ app.use(cors()); // Enable CORS for all requests
 
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:3001", 
+        origin: "http://localhost:3000", 
         methods: ["GET", "POST"],
     },
 });
